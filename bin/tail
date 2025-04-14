@@ -1,0 +1,23 @@
+<?php declare( strict_types = 1 );
+
+if( 3 !== $argc ) die( 'Usage: php slack-tail <file> <url>' );
+if( ! file_exists( $file = realpath( $argv[ 1 ] ) ) ) die( "File not found: $file" );
+if( ! is_readable( $file ) ) die( "File not readable: $file" );
+
+if( ! file_exists( "$file.pos" ) ) file_put_contents( "$file.pos", 0 );
+if( ! is_writable( "$file.pos" ) ) die( "File not writable: $file.pos" );
+if( ! is_readable( "$file.pos" ) ) die( "File not readable: $file.pos" );
+
+$line = (int)file_get_contents( "$file.pos" );
+$lines = file( $file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+
+if( empty( $content = implode( "\n", array_slice( $lines, $line ) ) ) ) exit( 0 );
+if( false === file_get_contents( $argv[ 2 ], false, stream_context_create( [
+    'http' => [
+        'method'  => 'POST',
+        'header'  => 'Content-Type: application/json',
+        'content' => json_encode( [ 'text' => "`$file` ```$content```", 'type' => 'mrkdwn' ] )
+    ]
+] ) ) ) die( 'Failed to send data to Slack.' );
+
+file_put_contents( "$file.pos", count( $lines ) );

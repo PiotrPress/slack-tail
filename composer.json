@@ -1,0 +1,17 @@
+{
+  "name": "piotrpress/slack-tail",
+  "license": "MIT",
+  "description": "A simple command line tool to tail a file and send the output to a Slack channel.",
+  "homepage": "https://github.com/PiotrPress/slack-tail",
+  "authors": [ {
+    "name": "Piotr Niewiadomski",
+    "homepage": "https://piotr.press"
+  } ],
+  "keywords": [ "slack", "tail", "php" ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "files": [ "bin/tail" ]
+  }
+}
