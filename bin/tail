@@ -1,6 +1,8 @@
 <?php declare( strict_types = 1 );
 
-if( 3 !== $argc ) die( 'Usage: php slack-tail <file> <url>' );
+'cli' === substr( php_sapi_name(), 0, 3 ) or die();
+if( 3 !== $argc ) die( 'Usage: php tail <file> <url>' );
+
 if( ! file_exists( $file = realpath( $argv[ 1 ] ) ) ) die( "File not found: $file" );
 if( ! is_readable( $file ) ) die( "File not readable: $file" );
 
@@ -11,7 +13,7 @@ if( ! is_readable( "$file.pos" ) ) die( "File not readable: $file.pos" );
 $line = (int)file_get_contents( "$file.pos" );
 $lines = file( $file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
 
-if( empty( $content = implode( "\n", array_slice( $lines, $line ) ) ) ) exit( 0 );
+if( empty( $content = implode( "\n", array_slice( $lines, $line ) ) ) ) exit;
 if( false === file_get_contents( $argv[ 2 ], false, stream_context_create( [
     'http' => [
         'method'  => 'POST',
